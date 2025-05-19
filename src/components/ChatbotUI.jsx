@@ -4,6 +4,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 
+
 export default function ChatbotUI() {
   const [messages, setMessages] = useState([
     { sender: 'bot', text: 'Hi! I’m your University Copilot. Ask me anything 📚' },
@@ -11,6 +12,7 @@ export default function ChatbotUI() {
   const [input, setInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
   const bottomRef = useRef(null);
+  
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -90,8 +92,20 @@ export default function ChatbotUI() {
     if (e.key === 'Enter') handleSend();
   };
 
+
+  
   return (
-    <div className="flex flex-col h-screen bg-slate1 dark:bg-slate12 text-slate12 dark:text-slate1">
+    <div className="flex flex-col h-screen bg-slate1 dark:bg-slate12 text-slate12 dark:text-slate1" style={{
+        textAlign: 'center' ,
+        // background:  'green',
+        padding: '10px',
+        
+        
+        whiteSpace: 'pre-wrap',
+       
+        alignSelf:  'flex-end',
+      }}>
+      
 
       {/* Header */}
       <header className="p-4 border-b border-slate6 dark:border-slate10 text-xl font-bold">
@@ -121,7 +135,8 @@ export default function ChatbotUI() {
                   : 'bg-slate3 dark:bg-slate11 text-slate12 dark:text-slate1'
               }`}
             >
-              {msg.text}
+            <ReactMarkdown>{msg.text}</ReactMarkdown>
+
             </div>
 
             {msg.sender === 'user' && (
