@@ -30,8 +30,19 @@ export default function ChatbotUI() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+
           model: 'deepseek-r1:1.5b',
-          prompt: input,
+          // temperature: 0.7,
+          // top_p: 0.9,
+          // top_k: 40,
+          // max_length: 200,
+
+          prompt: `You are a knowledgeable and concise assistant. Answer the user's question clearly and factually, without showing your reasoning or internal thoughts. Do not roleplay. Avoid speculative language. Be accurate.
+
+          Question: ${input}
+
+          Answer:`,
+
           stream: true,
         }),
       });
@@ -51,7 +62,7 @@ export default function ChatbotUI() {
             const json = JSON.parse(line);
             if (json.response) { 
               const cleanText = json.response.replace(/<\/?think>/gi, '')
-              
+
               fullText += cleanText;
               
 
