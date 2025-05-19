@@ -6,36 +6,13 @@ export default function ChatbotUI() {
   const [messages, setMessages] = useState([
     { sender: 'bot', text: 'Hi! I’m your University Copilot. Ask me anything 📚' },
   ]);
-
   const [input, setInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
   const bottomRef = useRef(null);
 
-  // Auto-scroll to bottom
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isBotTyping]);
-
-  // 👉 Send message to Ollama
-  const sendToOllama = async (prompt) => {
-    try {
-      const response = await fetch('http://127.0.0.1:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'deepseek-r1:1.5b', // use your model name here
-          prompt: prompt,
-          stream: false, // use true later if you want to stream response
-        }),
-      });
-
-      const data = await response.json();
-      return data.response || 'Sorry, I couldn’t understand that.';
-    } catch (error) {
-      console.error('Error talking to Ollama:', error);
-      return '⚠️ Something went wrong. Please try again.';
-    }
-  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -45,11 +22,58 @@ export default function ChatbotUI() {
     setInput('');
     setIsBotTyping(true);
 
-    const botReplyText = await sendToOllama(input);
-
-    const botMessage = { sender: 'bot', text: botReplyText };
+    const botMessage = { sender: 'bot', text: '' };
     setMessages((prev) => [...prev, botMessage]);
-    setIsBotTyping(false);
+
+    try {
+      const response = await fetch('http://localhost:11434/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'deepseek-r1:1.5b',
+          prompt: input,
+          stream: true,
+        }),
+      });
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let done = false;
+      let fullText = '';
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n').filter((line) => line.trim() !== '');
+
+          for (const line of lines) {
+            const json = JSON.parse(line);
+            if (json.response) { 
+              const cleanText = json.response.replace(/<\/?think>/gi, '')
+              
+              fullText += cleanText;
+              
+
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1].text = fullText;
+                return updated;
+              });
+            }
+          }
+        }
+        done = readerDone;
+      }
+    } catch (error) {
+      console.error('Streaming error:', error);
+      setMessages((prev) => [
+        ...prev,
+        { sender: 'bot', text: '❌ Error getting response from server.' },
+      ]);
+    } finally {
+      setIsBotTyping(false);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -58,6 +82,7 @@ export default function ChatbotUI() {
 
   return (
     <div className="flex flex-col h-screen bg-slate1 dark:bg-slate12 text-slate12 dark:text-slate1">
+
       {/* Header */}
       <header className="p-4 border-b border-slate6 dark:border-slate10 text-xl font-bold">
         🎓 University Copilot
@@ -98,7 +123,7 @@ export default function ChatbotUI() {
           </div>
         ))}
 
-        {/* Loading indicator */}
+        {/* Optional loading text or animation */}
         {isBotTyping && (
           <div className="flex items-center gap-3 justify-start animate-pulse">
             <Avatar>
