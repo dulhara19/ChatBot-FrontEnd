@@ -16,7 +16,28 @@ export default function ChatbotUI() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isBotTyping]);
 
-  const handleSend = () => {
+  // 👉 Send message to Ollama
+  const sendToOllama = async (prompt) => {
+    try {
+      const response = await fetch('http://127.0.0.1:11434/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'deepseek-r1:1.5b', // use your model name here
+          prompt: prompt,
+          stream: false, // use true later if you want to stream response
+        }),
+      });
+
+      const data = await response.json();
+      return data.response || 'Sorry, I couldn’t understand that.';
+    } catch (error) {
+      console.error('Error talking to Ollama:', error);
+      return '⚠️ Something went wrong. Please try again.';
+    }
+  };
+
+  const handleSend = async () => {
     if (!input.trim()) return;
 
     const userMessage = { sender: 'user', text: input };
@@ -24,15 +45,11 @@ export default function ChatbotUI() {
     setInput('');
     setIsBotTyping(true);
 
-    // Simulate bot "thinking..."
-    setTimeout(() => {
-      const botReply = {
-        sender: 'bot',
-        text: "This semester's exams start on June 5th and end on June 20th. 📅",
-      };
-      setMessages((prev) => [...prev, botReply]);
-      setIsBotTyping(false);
-    }, 1500);
+    const botReplyText = await sendToOllama(input);
+
+    const botMessage = { sender: 'bot', text: botReplyText };
+    setMessages((prev) => [...prev, botMessage]);
+    setIsBotTyping(false);
   };
 
   const handleKeyDown = (e) => {
@@ -41,7 +58,6 @@ export default function ChatbotUI() {
 
   return (
     <div className="flex flex-col h-screen bg-slate1 dark:bg-slate12 text-slate12 dark:text-slate1">
-
       {/* Header */}
       <header className="p-4 border-b border-slate6 dark:border-slate10 text-xl font-bold">
         🎓 University Copilot
