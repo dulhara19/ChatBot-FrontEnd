@@ -96,11 +96,10 @@ export default function ChatbotUI() {
   
   return (
     <div className="flex flex-col h-screen bg-slate1 dark:bg-slate12 text-slate12 dark:text-slate1" style={{
-        textAlign: 'center' ,
+        textAlign: 'left' ,
         // background:  'green',
         padding: '10px',
-        
-        
+
         whiteSpace: 'pre-wrap',
        
         alignSelf:  'flex-end',
@@ -124,7 +123,7 @@ export default function ChatbotUI() {
             {msg.sender === 'bot' && (
               <Avatar>
                 <AvatarImage src="/bot-avatar.png" />
-                <AvatarFallback>🤖</AvatarFallback>
+                <AvatarFallback>🌀</AvatarFallback>
               </Avatar>
             )}
 
@@ -142,7 +141,7 @@ export default function ChatbotUI() {
             {msg.sender === 'user' && (
               <Avatar>
                 <AvatarImage src="/user-avatar.png" />
-                <AvatarFallback>🧑</AvatarFallback>
+                <AvatarFallback>🔮</AvatarFallback>
               </Avatar>
             )}
           </div>
@@ -152,7 +151,7 @@ export default function ChatbotUI() {
         {isBotTyping && (
           <div className="flex items-center gap-3 justify-start animate-pulse">
             <Avatar>
-              <AvatarFallback>🤖</AvatarFallback>
+              <AvatarFallback>🌀</AvatarFallback>
             </Avatar>
             <div className="bg-slate4 dark:bg-slate9 text-slate11 dark:text-slate1 p-3 rounded-xl max-w-md text-sm">
               Typing...
