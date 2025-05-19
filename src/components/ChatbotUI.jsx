@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
 
 export default function ChatbotUI() {
   const [messages, setMessages] = useState([
@@ -37,11 +39,8 @@ export default function ChatbotUI() {
           // top_k: 40,
           // max_length: 200,
 
-          prompt: `You are a knowledgeable and concise assistant. Answer the user's question clearly and factually, without showing your reasoning or internal thoughts. Do not roleplay. Avoid speculative language. Be accurate.
+          prompt: input,
 
-          Question: ${input}
-
-          Answer:`,
 
           stream: true,
         }),
