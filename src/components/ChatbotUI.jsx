@@ -12,7 +12,6 @@ export default function ChatbotUI() {
   const [input, setInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
   const bottomRef = useRef(null);
-  
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -92,8 +91,6 @@ export default function ChatbotUI() {
     if (e.key === 'Enter') handleSend();
   };
 
-
-  
   return (
     <div className="flex flex-col h-screen bg-slate1 dark:bg-slate12 text-slate12 dark:text-slate1" style={{
         textAlign: 'left' ,
