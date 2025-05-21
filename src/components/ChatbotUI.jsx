@@ -102,7 +102,6 @@ export default function ChatbotUI() {
         alignSelf:  'flex-end',
       }}>
       
-
       {/* Header */}
       <header className="p-4 border-b border-slate6 dark:border-slate10 text-xl font-bold">
         🎓 University Copilot
