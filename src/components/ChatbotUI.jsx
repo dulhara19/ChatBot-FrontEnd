@@ -41,8 +41,6 @@ export default function ChatbotUI() {
           // max_length: 200,
 
           prompt: input,
-
-
           stream: true,
         }),
       });
