@@ -5,7 +5,7 @@ export default function DarkModeToggle() {
   const [darkMode, setDarkMode] = useState(() =>
     document.documentElement.classList.contains('dark')
   );
-
+  // Check if dark mode is enabled in local storage
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add('dark');
@@ -23,3 +23,4 @@ export default function DarkModeToggle() {
     </button>
   );
 }
+// 
