@@ -39,7 +39,6 @@ export default function ChatbotUI() {
           // top_p: 0.9,
           // top_k: 40,
           // max_length: 200,
-
           prompt: input,
           stream: true,
         }),
@@ -104,7 +103,6 @@ export default function ChatbotUI() {
       <header className="p-4 border-b border-slate6 dark:border-slate10 text-xl font-bold">
         🎓 University Copilot
       </header>
-
       {/* Chat Window */}
       <ScrollArea className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, index) => (
